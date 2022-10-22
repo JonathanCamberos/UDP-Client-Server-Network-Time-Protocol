@@ -23,13 +23,6 @@ struct server_arguments {
 	int dropPercent;
 };
 
-/** TA:
- * I'm not sure the sizes of these integer types
- * are guaranteed to be the same across hosts. So, it
- * would likely be safer to be more specific: e.g. uint32_t 
- * 
- * Fine because we're all using the same environment
-*/
 typedef struct clientInfo{
 
     unsigned long ipAddress;  //32 bits
@@ -115,14 +108,6 @@ int main(int argc, char *argv[]){
     server_parseopt(&args, argc, argv);
     srand(time(NULL));
 
-	/** TA:
-	 * You may want to look at Bobby's code from a0
-	 * for the `LOG` function. That way you don't need to
-	 * bother commenting out all these printf statements.
-	 * 
-	 * And since most of your prints seem to be 'debugging prints',
-	 * maybe just try out the gdb debugger?
-	*/
 	
 
     //function from poll()
@@ -137,16 +122,6 @@ int main(int argc, char *argv[]){
 
     int test = 1;
 	int littleEndian = 0;
-
-	/** TA:
-	 * What is the point of this test?
-	 * This is taken care of by the `hton` type functions, where
-	 * `h` is known already.
-	 * You should ALWAYS convert to host byte ordering when receiving integer data.
-	 * It costs you nothing if it is already in the correct order.
-	 * 
-	 * Typically the network will send with big-endian (though not always)
-	*/
 	if(*(char *)&test == 1){
 		//printf("Little Endian\n");
 		littleEndian = 1;
@@ -238,7 +213,7 @@ int main(int argc, char *argv[]){
 
                 
                 //use all packets
-                printf("HERE!!!\n"); 
+                printf("HERE!!!\n");
 
                 bytesRecv = recvfrom(sock.fd, &currTimeReq, sizeof(currTimeReq), 0, (struct sockaddr *)&currAddr, &currAddr_len);
 
@@ -373,9 +348,6 @@ int main(int argc, char *argv[]){
 						//We have a Response ready, we have found where the client is in our addresses, now the fun begins
                         holder1 = ntohl(currTimeReq.seqNum);
 						if(holder1 < allClientInfo[foundClientIndex].highestCurr){
-							/** TA:
-							 * I think you forgot something about the port and its endianness. Whoops
-							*/
 							printf("<%s>:<%lu><%d><%d>\n", inet_ntoa(temp), currAddr.sin_port, holder1, allClientInfo[foundClientIndex].highestCurr);
 							//printf("")
 						}else{
